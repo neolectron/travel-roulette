@@ -1,0 +1,5 @@
+schema: https://countries.trevorblades.com
+generates:
+  ./graphql/types.d.ts:
+    plugins:
+      - typescript
