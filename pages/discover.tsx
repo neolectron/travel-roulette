@@ -2,8 +2,9 @@ import type { NextPage } from 'next';
 import type { Country, Continent } from '../graphql/types';
 import type { CountryEx, ContinentEx } from '../graphql/extended-types';
 
-import { gql } from '@apollo/client';
 import client from '../graphql/apollo-client';
+import query from '../graphql/queries/queryCountriesAndContinent';
+
 import Searchbar from '../components/SearchBar/SearchBar';
 
 interface DiscoverPageProps {
@@ -28,20 +29,7 @@ const DiscoverPage: NextPage<DiscoverPageProps> = ({
 };
 
 export async function getStaticProps() {
-  const { data } = await client.query({
-    query: gql`
-      query CountriesAndContinents {
-        countries {
-          code
-          name
-        }
-        continents {
-          code
-          name
-        }
-      }
-    `,
-  });
+  const { data } = await client.query({ query });
 
   return {
     props: {

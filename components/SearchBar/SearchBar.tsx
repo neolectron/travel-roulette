@@ -2,6 +2,7 @@ import type { Zone } from '../../graphql/extended-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { useClickAway } from 'react-use';
 import SuggestionList from './SuggestionList';
+import { useSearchBarContext } from './SearchBarContext';
 
 interface SearchBarProps {
   suggestions?: Zone[];
@@ -15,65 +16,27 @@ const filterSuggestions = (list: Zone[], searchPattern: string) =>
 
 const SearchBar = ({ suggestions, onSelection }: SearchBarProps) => {
   const searchRef = useRef<HTMLDivElement>(null);
-  const [searchText, setSearchText] = useState('');
-  const [suggested, setSuggested] = useState([] as Zone[]);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [isOpen, setIsOpen] = useState(false);
+  const { setIsOpen } = useSearchBarContext();
 
   useClickAway(searchRef, () => setIsOpen(false));
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setSearchText(value);
+  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { value } = event.target;
+  //   setSearchText(value);
 
-    if (!suggestions) return;
+  //   if (!suggestions) return;
 
-    const filtered = filterSuggestions(suggestions, value);
-    console.log(filtered);
+  //   const filtered = filterSuggestions(suggestions, value);
 
-    setSuggested(filtered);
-    setSelectedIndex(0);
+  //   setSuggested(filtered);
+  //   setSelectedIndex(0);
 
-    if (!filtered.length || value === '') {
-      setIsOpen(false);
-    } else {
-      setIsOpen(true);
-    }
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    const { key } = event;
-
-    if (!isOpen) return;
-
-    if (key === 'Enter') {
-      setSearchText(suggested[selectedIndex]?.name as Zone['name']);
-      setSelectedIndex(0);
-      setIsOpen(false);
-      onSelection?.(suggested[selectedIndex] as Zone);
-    }
-
-    if (key === 'ArrowDown' && selectedIndex < suggested.length - 1) {
-      event.preventDefault();
-      setSelectedIndex(selectedIndex + 1);
-    }
-
-    if (key === 'ArrowUp' && selectedIndex > 0) {
-      event.preventDefault();
-      setSelectedIndex(selectedIndex - 1);
-    }
-
-    if (key === 'Escape') {
-      setIsOpen(false);
-    }
-  };
-
-  const handleClick = (selectedZone: Zone) => {
-    setSearchText(selectedZone.name);
-    setIsOpen(false);
-    setSelectedIndex(0);
-    onSelection?.(selectedZone);
-  };
+  //   if (!filtered.length || value === '') {
+  //     setIsOpen(false);
+  //   } else {
+  //     setIsOpen(true);
+  //   }
+  // };
 
   return (
     <div ref={searchRef}>
